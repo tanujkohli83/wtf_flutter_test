@@ -11,9 +11,12 @@ class CallPrejoinCard extends StatelessWidget {
     required this.onAudioMutedChanged,
     required this.onVideoMutedChanged,
     required this.onJoinPressed,
+    this.onTestJoinPressed,
+    this.testJoinLabel,
     this.participantSummary,
     this.isJoining = false,
     this.canJoin = true,
+    this.canTestJoin = true,
   });
 
   final String title;
@@ -24,9 +27,12 @@ class CallPrejoinCard extends StatelessWidget {
   final ValueChanged<bool> onAudioMutedChanged;
   final ValueChanged<bool> onVideoMutedChanged;
   final VoidCallback onJoinPressed;
+  final VoidCallback? onTestJoinPressed;
+  final String? testJoinLabel;
   final String? participantSummary;
   final bool isJoining;
   final bool canJoin;
+  final bool canTestJoin;
 
   @override
   Widget build(BuildContext context) {
@@ -46,8 +52,11 @@ class CallPrejoinCard extends StatelessWidget {
       onAudioMutedChanged: onAudioMutedChanged,
       onVideoMutedChanged: onVideoMutedChanged,
       onJoinPressed: onJoinPressed,
+      onTestJoinPressed: onTestJoinPressed,
+      testJoinLabel: testJoinLabel,
       isJoining: isJoining,
       canJoin: canJoin,
+      canTestJoin: canTestJoin,
     );
 
     return DecoratedBox(
@@ -207,8 +216,11 @@ class _CallControls extends StatelessWidget {
     required this.onAudioMutedChanged,
     required this.onVideoMutedChanged,
     required this.onJoinPressed,
+    required this.onTestJoinPressed,
+    required this.testJoinLabel,
     required this.isJoining,
     required this.canJoin,
+    required this.canTestJoin,
   });
 
   final String title;
@@ -218,8 +230,11 @@ class _CallControls extends StatelessWidget {
   final ValueChanged<bool> onAudioMutedChanged;
   final ValueChanged<bool> onVideoMutedChanged;
   final VoidCallback onJoinPressed;
+  final VoidCallback? onTestJoinPressed;
+  final String? testJoinLabel;
   final bool isJoining;
   final bool canJoin;
+  final bool canTestJoin;
 
   @override
   Widget build(BuildContext context) {
@@ -267,6 +282,20 @@ class _CallControls extends StatelessWidget {
             label: Text(isJoining ? 'Joining...' : 'Join Meeting'),
           ),
         ),
+        if (onTestJoinPressed != null) ...[
+          const SizedBox(height: 12),
+          SizedBox(
+            width: double.infinity,
+            child: OutlinedButton.icon(
+              onPressed: isJoining || !canTestJoin ? null : onTestJoinPressed,
+              style: OutlinedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(vertical: 18),
+              ),
+              icon: const Icon(Icons.rocket_launch_rounded),
+              label: Text(testJoinLabel ?? 'Join Now'),
+            ),
+          ),
+        ],
       ],
     );
   }

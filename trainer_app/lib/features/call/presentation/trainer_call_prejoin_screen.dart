@@ -67,6 +67,7 @@ class TrainerCallPrejoinScreen extends ConsumerWidget {
         ) ??
         false;
     final canJoin = _isSupportedPlatform && canJoinScheduledCall;
+    final canTestJoin = _isSupportedPlatform;
 
     return Scaffold(
       appBar: AppBar(title: const Text('Start Video Call')),
@@ -83,7 +84,7 @@ class TrainerCallPrejoinScreen extends ConsumerWidget {
                   title: 'Member Video Call',
                   subtitle: canJoinScheduledCall
                       ? 'Join the approved Jitsi call with DK.'
-                      : 'Approved calls become joinable only during the scheduled slot.',
+                      : 'Approved calls become joinable only during the scheduled slot. Use Call Now for testing.',
                   roomId: _roomId,
                   audioMuted: prejoinState.audioMuted,
                   videoMuted: prejoinState.videoMuted,
@@ -96,11 +97,16 @@ class TrainerCallPrejoinScreen extends ConsumerWidget {
                   onJoinPressed: canJoin
                       ? () => _joinMeeting(context, ref)
                       : () {},
+                  onTestJoinPressed: canTestJoin
+                      ? () => _joinMeeting(context, ref)
+                      : null,
+                  testJoinLabel: 'Call Now',
                   participantSummary: participantCount == 0
                       ? 'Waiting for participants'
                       : '$participantCount participant(s) in room',
                   isJoining: session?.isJoining ?? false,
                   canJoin: canJoin,
+                  canTestJoin: canTestJoin,
                 ),
               ],
             ),
