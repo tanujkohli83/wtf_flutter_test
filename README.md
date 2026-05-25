@@ -85,13 +85,13 @@ The project follows a simple modular Flutter structure suitable for an assignmen
 
 ```text
 .
-├── guru_app/
-├── trainer_app/
-├── shared/
-├── README.md
-├── ARCHITECTURE.md
-├── DECISIONS.md
-└── AI_LEDGER.md
+â”œâ”€â”€ guru_app/
+â”œâ”€â”€ trainer_app/
+â”œâ”€â”€ shared/
+â”œâ”€â”€ README.md
+â”œâ”€â”€ ARCHITECTURE.md
+â”œâ”€â”€ DECISIONS.md
+â””â”€â”€ AI_LEDGER.md
 ```
 
 ## Setup Instructions

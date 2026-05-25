@@ -42,8 +42,6 @@ AI assistance was not treated as a source of truth by itself. All outputs requir
 
 ### Prompt 1
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Prompt Summary:
   - Implement session logging for the Flutter trainer/member communication app.
 - Purpose:
@@ -63,8 +61,6 @@ AI assistance was not treated as a source of truth by itself. All outputs requir
 
 ### Prompt 2
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Prompt Summary:
   - Generate a professional README for a Flutter dual-app realtime trainer/member communication assignment.
 - Purpose:
@@ -80,8 +76,6 @@ AI assistance was not treated as a source of truth by itself. All outputs requir
 
 ### Prompt 3
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Prompt Summary:
   - Generate a professional AI ledger for a Flutter assignment project.
 - Purpose:
@@ -127,7 +121,7 @@ AI-generated suggestions were adapted to match:
 
 - the existing Firebase setup in both apps
 - the existing shared service style
-- the assignment’s simplified data model
+- the assignmentâ€™s simplified data model
 
 ### 3. RTC Integration Help
 
@@ -174,8 +168,6 @@ The generated UI was kept intentionally simple and practical, rather than produc
 
 ### Debugging Area 1: Dependency / Package Resolution
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Issue:
   - newly added package usage required dependency refresh
 - AI Assistance:
@@ -186,8 +178,6 @@ The generated UI was kept intentionally simple and practical, rather than produc
 
 ### Debugging Area 2: Session Lifecycle Hooking
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Issue:
   - call termination flow needed to preserve enough session context for feedback and log completion
 - AI Assistance:
@@ -198,8 +188,6 @@ The generated UI was kept intentionally simple and practical, rather than produc
 
 ### Debugging Area 3: Local Serialization
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Issue:
   - local cache format and Firestore-oriented serialization needed separation
 - AI Assistance:
@@ -209,8 +197,6 @@ The generated UI was kept intentionally simple and practical, rather than produc
 
 ### Debugging Area 4: Static Analysis Cleanup
 
-- Timestamp: `[YYYY-MM-DD HH:MM placeholder]`
-- Commit Reference: `[commit-hash placeholder]`
 - Issue:
   - post-implementation analyzer failures
 - AI Assistance:
@@ -273,27 +259,6 @@ Reviewers should note the following:
 ## Placeholder Audit Fields
 
 Use the following placeholders if a formal review trail is required:
-
-### Session Logging Work
-
-- Timestamp Started: `[placeholder]`
-- Timestamp Completed: `[placeholder]`
-- Related Commit(s): `[placeholder]`
-- Reviewer Notes: `[placeholder]`
-
-### Documentation Work
-
-- Timestamp Started: `[placeholder]`
-- Timestamp Completed: `[placeholder]`
-- Related Commit(s): `[placeholder]`
-- Reviewer Notes: `[placeholder]`
-
-### Final Submission Review
-
-- Review Timestamp: `[placeholder]`
-- Final Commit Reference: `[placeholder]`
-- Submission Tag / Version: `[placeholder]`
-- Reviewer Sign-off: `[placeholder]`
 
 ## Reviewer Notes
 
