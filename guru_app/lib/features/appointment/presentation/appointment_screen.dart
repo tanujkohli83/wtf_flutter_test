@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
 
+import '../../chat/application/chat_controller.dart';
 import '../application/appointment_controller.dart';
 import 'widgets/appointment_day_picker.dart';
 import 'widgets/appointment_note_field.dart';
@@ -9,12 +11,44 @@ import 'widgets/appointment_slot_picker.dart';
 class AppointmentScreen extends ConsumerWidget {
   const AppointmentScreen({super.key});
 
-  void _requestAppointment(BuildContext context, AppointmentState appointment) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Requested ${appointment.selectedSlot} appointment'),
-      ),
+  Future<void> _requestAppointment(
+    BuildContext context,
+    WidgetRef ref,
+    AppointmentState appointment,
+  ) async {
+    final messenger = ScaffoldMessenger.of(context);
+    final scheduledAt = AppointmentController.scheduledAtFor(appointment);
+    final request = AppointmentRequestModel(
+      id: 'req_${scheduledAt.microsecondsSinceEpoch}_$guruUserId',
+      memberId: guruUserId,
+      memberName: 'DK',
+      trainerId: trainerUserId,
+      trainerName: 'Aarav',
+      focus: appointment.note.trim().isEmpty
+          ? 'Trainer video call'
+          : appointment.note.trim(),
+      note: appointment.note.trim(),
+      scheduledAt: scheduledAt,
+      durationMinutes: AppointmentController.appointmentDurationMinutes,
+      status: AppointmentRequestStatus.pending,
+      createdAt: DateTime.now(),
     );
+
+    try {
+      await ref.read(appointmentRequestServiceProvider).createRequest(request);
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(
+            'Requested appointment for ${appointment.selectedSlot}.',
+          ),
+        ),
+      );
+      ref.invalidate(appointmentControllerProvider);
+    } catch (error) {
+      messenger.showSnackBar(
+        SnackBar(content: Text('Unable to send request: $error')),
+      );
+    }
   }
 
   @override
@@ -63,7 +97,7 @@ class AppointmentScreen extends ConsumerWidget {
           padding: const EdgeInsets.fromLTRB(24, 12, 24, 20),
           child: FilledButton.icon(
             onPressed: appointment.canRequest
-                ? () => _requestAppointment(context, appointment)
+                ? () => _requestAppointment(context, ref, appointment)
                 : null,
             icon: const Icon(Icons.calendar_month_rounded),
             label: const Text('Request Appointment'),

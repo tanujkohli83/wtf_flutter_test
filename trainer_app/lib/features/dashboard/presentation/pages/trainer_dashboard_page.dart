@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
+import 'package:trainer_app/features/call/presentation/trainer_call_prejoin_screen.dart';
 import 'package:trainer_app/features/chat/application/trainer_chat_controller.dart';
 import 'package:trainer_app/features/chat/presentation/trainer_chat_screen.dart';
 import 'package:trainer_app/features/dashboard/presentation/pages/request_management_page.dart';
@@ -12,6 +14,10 @@ class TrainerDashboardPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final requestsAsync = ref.watch(
+      trainerAppointmentRequestsProvider(trainerUserId),
+    );
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -32,6 +38,7 @@ class TrainerDashboardPage extends ConsumerWidget {
             const SizedBox(height: 18),
             _DashboardTileGrid(
               unreadCount: ref.watch(trainerUnreadCountProvider),
+              requestCount: requestsAsync,
             ),
           ],
         ),
@@ -85,9 +92,13 @@ class _DashboardHero extends StatelessWidget {
 }
 
 class _DashboardTileGrid extends StatelessWidget {
-  const _DashboardTileGrid({required this.unreadCount});
+  const _DashboardTileGrid({
+    required this.unreadCount,
+    required this.requestCount,
+  });
 
   final AsyncValue<int> unreadCount;
+  final AsyncValue<List<AppointmentRequestModel>> requestCount;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +107,16 @@ class _DashboardTileGrid extends StatelessWidget {
         title: 'Members',
         subtitle: '34 active clients',
         icon: Icons.groups_rounded,
+      ),
+      DashboardActionTile(
+        title: 'Call',
+        subtitle: 'Open the member meeting room',
+        icon: Icons.video_call_rounded,
+        onTap: () => Navigator.of(context).push(
+          MaterialPageRoute<void>(
+            builder: (_) => const TrainerCallPrejoinScreen(),
+          ),
+        ),
       ),
       DashboardActionTile(
         title: 'Chats',
@@ -112,7 +133,21 @@ class _DashboardTileGrid extends StatelessWidget {
       ),
       DashboardActionTile(
         title: 'Requests',
-        subtitle: '5 waiting approvals',
+        subtitle: requestCount.when(
+          data: (requests) {
+            final pending = requests
+                .where(
+                  (request) =>
+                      request.status == AppointmentRequestStatus.pending,
+                )
+                .length;
+            return pending == 1
+                ? '1 waiting approval'
+                : '$pending waiting approvals';
+          },
+          loading: () => 'Loading requests',
+          error: (_, _) => 'Requests unavailable',
+        ),
         icon: Icons.assignment_turned_in_rounded,
         onTap: () => Navigator.of(context).push(
           MaterialPageRoute<void>(

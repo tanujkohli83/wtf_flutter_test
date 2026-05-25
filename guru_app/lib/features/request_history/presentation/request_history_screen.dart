@@ -1,58 +1,67 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared/shared.dart';
 
-import '../domain/appointment_request.dart';
+import '../../call/presentation/guru_call_prejoin_screen.dart';
+import '../../chat/application/chat_controller.dart';
 import 'widgets/request_history_card.dart';
 
-class RequestHistoryScreen extends StatelessWidget {
+class RequestHistoryScreen extends ConsumerWidget {
   const RequestHistoryScreen({super.key});
 
-  static const List<AppointmentRequest> _requests = [
-    AppointmentRequest(
-      trainerName: 'Maya Iyer',
-      focus: 'Strength check-in',
-      dateLabel: 'Today',
-      timeLabel: '9:00 AM',
-      status: AppointmentRequestStatus.pending,
-      note: 'Review squat form and weekly load.',
-    ),
-    AppointmentRequest(
-      trainerName: 'Aarav Sharma',
-      focus: 'Nutrition planning',
-      dateLabel: 'Tomorrow',
-      timeLabel: '10:30 AM',
-      status: AppointmentRequestStatus.approved,
-      note: 'Adjust breakfast around morning workouts.',
-    ),
-    AppointmentRequest(
-      trainerName: 'Nisha Rao',
-      focus: 'Mobility session',
-      dateLabel: 'Fri, 29 May',
-      timeLabel: '5:30 PM',
-      status: AppointmentRequestStatus.declined,
-      note: 'Trainer unavailable. Please choose another slot.',
-    ),
-  ];
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final requestsAsync = ref.watch(
+      memberAppointmentRequestsProvider(guruUserId),
+    );
 
     return Scaffold(
       appBar: AppBar(title: const Text('Request History')),
       body: SafeArea(
-        child: ListView.separated(
-          padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
-          itemCount: _requests.length + 1,
-          separatorBuilder: (_, index) => index == 0
-              ? const SizedBox(height: 22)
-              : const SizedBox(height: 14),
-          itemBuilder: (context, index) {
-            if (index == 0) {
-              return _HistoryHeader(theme: theme);
-            }
+        child: requestsAsync.when(
+          data: (requests) => ListView.separated(
+            padding: const EdgeInsets.fromLTRB(24, 12, 24, 32),
+            itemCount: requests.length + 1,
+            separatorBuilder: (_, index) => index == 0
+                ? const SizedBox(height: 22)
+                : const SizedBox(height: 14),
+            itemBuilder: (context, index) {
+              if (index == 0) {
+                return _HistoryHeader(theme: theme);
+              }
 
-            return RequestHistoryCard(request: _requests[index - 1]);
-          },
+              final request = requests[index - 1];
+              final canJoinNow = request.canJoinAt(DateTime.now());
+              return RequestHistoryCard(
+                request: request,
+                action: request.status == AppointmentRequestStatus.approved
+                    ? FilledButton.icon(
+                        onPressed: canJoinNow
+                            ? () => Navigator.of(context).push(
+                                MaterialPageRoute<void>(
+                                  builder: (_) => const GuruCallPrejoinScreen(),
+                                ),
+                              )
+                            : null,
+                        icon: const Icon(Icons.video_call_rounded),
+                        label: Text(
+                          canJoinNow
+                              ? 'Join Video Call'
+                              : 'Available At Scheduled Time',
+                        ),
+                      )
+                    : null,
+              );
+            },
+          ),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (error, _) => Center(
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Text('Unable to load requests: $error'),
+            ),
+          ),
         ),
       ),
     );

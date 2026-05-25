@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../domain/appointment_request.dart';
+import 'package:shared/shared.dart';
 
 class RequestStatusChip extends StatelessWidget {
   const RequestStatusChip({super.key, required this.status});

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../appointment/presentation/appointment_screen.dart';
+import '../../call/presentation/guru_call_prejoin_screen.dart';
 import '../../chat/presentation/chat_list_screen.dart';
 import '../../profile_setup/presentation/profile_setup_screen.dart';
 import '../../session_history/presentation/session_history_screen.dart';
@@ -31,6 +32,12 @@ class DashboardScreen extends StatelessWidget {
     Navigator.of(
       context,
     ).push(MaterialPageRoute(builder: (_) => const SessionHistoryScreen()));
+  }
+
+  void _openVideoCall(BuildContext context) {
+    Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const GuruCallPrejoinScreen()));
   }
 
   @override
@@ -75,6 +82,13 @@ class DashboardScreen extends StatelessWidget {
               subtitle: 'Book a check-in call at a time that works.',
               icon: Icons.video_call_rounded,
               onTap: () => _openScheduleCall(context),
+            ),
+            const SizedBox(height: 16),
+            DashboardActionCard(
+              title: 'Join Video Call',
+              subtitle: 'Open the shared trainer meeting room.',
+              icon: Icons.videocam_rounded,
+              onTap: () => _openVideoCall(context),
             ),
             const SizedBox(height: 16),
             DashboardActionCard(

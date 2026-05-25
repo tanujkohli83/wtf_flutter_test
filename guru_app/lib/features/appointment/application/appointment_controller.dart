@@ -13,6 +13,15 @@ class AppointmentState {
 
   bool get canRequest => selectedSlot.isNotEmpty;
 
+  DateTime selectedDate() {
+    final now = DateTime.now();
+    return DateTime(
+      now.year,
+      now.month,
+      now.day,
+    ).add(Duration(days: selectedDayIndex));
+  }
+
   AppointmentState copyWith({
     int? selectedDayIndex,
     String? selectedSlot,
@@ -27,6 +36,7 @@ class AppointmentState {
 }
 
 class AppointmentController extends Notifier<AppointmentState> {
+  static const int appointmentDurationMinutes = 30;
   static const slots = [
     '8:00 AM',
     '8:30 AM',
@@ -59,6 +69,34 @@ class AppointmentController extends Notifier<AppointmentState> {
 
   void updateNote(String note) {
     state = state.copyWith(note: note);
+  }
+
+  static DateTime scheduledAtFor(AppointmentState state) {
+    final date = state.selectedDate();
+    final parsed = _parseSlot(state.selectedSlot);
+    return DateTime(
+      date.year,
+      date.month,
+      date.day,
+      parsed.hour,
+      parsed.minute,
+    );
+  }
+
+  static ({int hour, int minute}) _parseSlot(String slot) {
+    final parts = slot.trim().split(' ');
+    final timeParts = parts.first.split(':');
+    var hour = int.parse(timeParts[0]);
+    final minute = int.parse(timeParts[1]);
+    final meridiem = parts.last.toUpperCase();
+
+    if (meridiem == 'PM' && hour != 12) {
+      hour += 12;
+    } else if (meridiem == 'AM' && hour == 12) {
+      hour = 0;
+    }
+
+    return (hour: hour, minute: minute);
   }
 }
 

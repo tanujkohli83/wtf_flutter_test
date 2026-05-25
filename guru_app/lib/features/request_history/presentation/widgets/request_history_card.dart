@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shared/shared.dart';
 
-import '../../domain/appointment_request.dart';
 import 'request_status_chip.dart';
 
 class RequestHistoryCard extends StatelessWidget {
-  const RequestHistoryCard({super.key, required this.request});
+  const RequestHistoryCard({super.key, required this.request, this.action});
 
-  final AppointmentRequest request;
+  final AppointmentRequestModel request;
+  final Widget? action;
 
   @override
   Widget build(BuildContext context) {
@@ -45,11 +46,17 @@ class RequestHistoryCard extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           _RequestMeta(
-            dateLabel: request.dateLabel,
-            timeLabel: request.timeLabel,
+            scheduledAt: request.scheduledAt,
+            durationMinutes: request.durationMinutes,
           ),
           const SizedBox(height: 14),
-          Text(request.note, style: theme.textTheme.bodyMedium),
+          Text(
+            request.note.isEmpty
+                ? 'No additional note provided.'
+                : request.note,
+            style: theme.textTheme.bodyMedium,
+          ),
+          if (action != null) ...[const SizedBox(height: 16), action!],
         ],
       ),
     );
@@ -86,10 +93,13 @@ class _RequestIcon extends StatelessWidget {
 }
 
 class _RequestMeta extends StatelessWidget {
-  const _RequestMeta({required this.dateLabel, required this.timeLabel});
+  const _RequestMeta({
+    required this.scheduledAt,
+    required this.durationMinutes,
+  });
 
-  final String dateLabel;
-  final String timeLabel;
+  final DateTime scheduledAt;
+  final int durationMinutes;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +113,7 @@ class _RequestMeta extends StatelessWidget {
           color: theme.colorScheme.primary,
         ),
         const SizedBox(width: 6),
-        Text(dateLabel, style: theme.textTheme.labelLarge),
+        Text(_dateLabel, style: theme.textTheme.labelLarge),
         const SizedBox(width: 16),
         Icon(
           Icons.schedule_rounded,
@@ -111,8 +121,39 @@ class _RequestMeta extends StatelessWidget {
           color: theme.colorScheme.primary,
         ),
         const SizedBox(width: 6),
-        Text(timeLabel, style: theme.textTheme.labelLarge),
+        Text(_timeLabel, style: theme.textTheme.labelLarge),
       ],
     );
+  }
+
+  String get _dateLabel {
+    const months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+    const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    return '${weekdays[scheduledAt.weekday - 1]}, ${scheduledAt.day} ${months[scheduledAt.month - 1]}';
+  }
+
+  String get _timeLabel {
+    final end = scheduledAt.add(Duration(minutes: durationMinutes));
+    return '${_formatTime(scheduledAt)} - ${_formatTime(end)}';
+  }
+
+  String _formatTime(DateTime value) {
+    final period = value.hour >= 12 ? 'PM' : 'AM';
+    final hour = value.hour % 12 == 0 ? 12 : value.hour % 12;
+    final minute = value.minute.toString().padLeft(2, '0');
+    return '$hour:$minute $period';
   }
 }
