@@ -1,30 +1,46 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:trainer_app/main.dart';
+import 'package:trainer_app/app/trainer_app.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('renders mock login and opens dashboard', (
+    WidgetTester tester,
+  ) async {
+    await tester.pumpWidget(const TrainerApp());
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    expect(find.text('Trainer Portal'), findsOneWidget);
+    expect(find.text('Login as Aarav'), findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    await tester.tap(find.text('Login as Aarav'));
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    expect(find.text('Dashboard'), findsOneWidget);
+    expect(find.text('Members'), findsOneWidget);
+    expect(find.text('Chats'), findsOneWidget);
+    expect(find.text('Requests'), findsOneWidget);
+    expect(find.text('Sessions'), findsOneWidget);
+
+    await tester.tap(find.text('Requests'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Trainer requests'), findsOneWidget);
+    expect(find.text('Kabir Shah'), findsOneWidget);
+    expect(find.text('Conflict'), findsOneWidget);
+    expect(find.text('Approve'), findsWidgets);
+    expect(find.text('Decline'), findsWidgets);
+
+    await tester.pageBack();
+    await tester.pumpAndSettle();
+
+    await tester.tap(find.text('Sessions'));
+    await tester.pumpAndSettle();
+
+    expect(find.text('Completed sessions'), findsOneWidget);
+    expect(find.text('Maya Rao'), findsOneWidget);
+    expect(find.text('60m'), findsOneWidget);
+    expect(
+      find.text('Strong form on squats. Increase deadlift load next session.'),
+      findsOneWidget,
+    );
   });
 }

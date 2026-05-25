@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "626464651654",
+    "project_id": "wtf-flutter-test-c72f2",
+    "storage_bucket": "wtf-flutter-test-c72f2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:626464651654:android:4d32afc7adb5b9a80d1407",
+        "android_client_info": {
+          "package_name": "com.example.trainer_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBEs2DjMK44akbSZGVyWUjMEq8NIcG18K0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
